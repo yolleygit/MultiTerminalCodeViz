@@ -9,10 +9,10 @@ Indentation denotes nesting—finish all subtasks before marking the parent as c
 - [x] 0.2 **Scaffold** Vite + React TS project
   - [x] `npm create vite@latest`
   - [x] Choose "React + TypeScript" template
-- [ ] 0.3 Add ESLint (Airbnb) + Prettier
-  - [ ] Create `.eslintrc.cjs`
-  - [ ] Create `.prettierrc`
-  - [ ] Add lint scripts to `package.json`
+- [x] 0.3 Add ESLint (Airbnb) + Prettier
+  - [x] Create `.eslintrc.cjs`
+  - [x] Create `.prettierrc`
+  - [x] Add lint scripts to `package.json`
 - [ ] 0.4 Add Vitest + React-Testing-Library
   - [ ] Install dev-deps
   - [ ] Configure `vitest.config.ts`
