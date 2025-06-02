@@ -5,10 +5,10 @@ Indentation denotes nesting—finish all subtasks before marking the parent as c
 # Cloud Code Meme Terminal Visualizer – TODO Checklist
 
 ## 0  Project Setup & CI
-- [ ] 0.1 Initialize Git repository
+- [x] 0.1 Initialize Git repository
 - [ ] 0.2 **Scaffold** Vite + React TS project
   - [ ] `npm create vite@latest`
-  - [ ] Choose “React + TypeScript” template
+  - [ ] Choose "React + TypeScript" template
 - [ ] 0.3 Add ESLint (Airbnb) + Prettier
   - [ ] Create `.eslintrc.cjs`
   - [ ] Create `.prettierrc`
@@ -152,7 +152,7 @@ Indentation denotes nesting—finish all subtasks before marking the parent as c
 ### Optional Enhancements (Parked)
 - [ ] Typing sound effects
 - [ ] Multiple text files, one per terminal
-- [ ] “Record mode” – hides cursor & mouse
+- [ ] "Record mode" – hides cursor & mouse
 ```
 
 *Happy building!*
