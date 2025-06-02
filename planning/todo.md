@@ -6,9 +6,9 @@ Indentation denotes nesting—finish all subtasks before marking the parent as c
 
 ## 0  Project Setup & CI
 - [x] 0.1 Initialize Git repository
-- [ ] 0.2 **Scaffold** Vite + React TS project
-  - [ ] `npm create vite@latest`
-  - [ ] Choose "React + TypeScript" template
+- [x] 0.2 **Scaffold** Vite + React TS project
+  - [x] `npm create vite@latest`
+  - [x] Choose "React + TypeScript" template
 - [ ] 0.3 Add ESLint (Airbnb) + Prettier
   - [ ] Create `.eslintrc.cjs`
   - [ ] Create `.prettierrc`
