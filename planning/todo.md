@@ -18,7 +18,7 @@ Indentation denotes nesting—finish all subtasks before marking the parent as c
   - [x] Configure `vitest.config.ts`
   - [x] Write first dummy test (`<App /> renders`)
 - [ ] 0.5 Add GitHub Actions CI
-  - [ ] `.github/workflows/ci.yml` (install → lint → test → build)
+  - [x] `.github/workflows/ci.yml` (install → lint → test → build)
   - [ ] Verify CI passes on push
 - [ ] 0.6 Commit + push scaffold
 
