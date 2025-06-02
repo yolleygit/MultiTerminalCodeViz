@@ -17,19 +17,19 @@ Indentation denotes nesting—finish all subtasks before marking the parent as c
   - [x] Install dev-deps
   - [x] Configure `vitest.config.ts`
   - [x] Write first dummy test (`<App /> renders`)
-- [ ] 0.5 Add GitHub Actions CI
+- [X] 0.5 Add GitHub Actions CI
   - [x] `.github/workflows/ci.yml` (install → lint → test → build)
-  - [ ] Verify CI passes on push
-- [ ] 0.6 Commit + push scaffold
+  - [X] Verify CI passes on push
+- [X] 0.6 Commit + push scaffold
 
 ---
 
 ## 1  Styling Baseline
-- [ ] 1.1 Install Tailwind CSS (`tailwindcss postcss autoprefixer`)
-- [ ] 1.2 `tailwind.config.js` – set content paths
-- [ ] 1.3 Add Tailwind directives to `src/index.css`
-- [ ] 1.4 Verify Tailwind class renders (`text-2xl font-bold`)
-- [ ] 1.5 Update unit test to assert Tailwind class present
+- [x] 1.1 Install Tailwind CSS (`tailwindcss postcss autoprefixer`)
+- [x] 1.2 `tailwind.config.js` – set content paths
+- [x] 1.3 Add Tailwind directives to `src/index.css`
+- [x] 1.4 Verify Tailwind class renders (`text-2xl font-bold`)
+- [x] 1.5 Update unit test to assert Tailwind class present
 
 ---
 
