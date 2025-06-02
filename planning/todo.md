@@ -13,10 +13,10 @@ Indentation denotes nesting—finish all subtasks before marking the parent as c
   - [x] Create `.eslintrc.cjs`
   - [x] Create `.prettierrc`
   - [x] Add lint scripts to `package.json`
-- [ ] 0.4 Add Vitest + React-Testing-Library
-  - [ ] Install dev-deps
-  - [ ] Configure `vitest.config.ts`
-  - [ ] Write first dummy test (`<App /> renders`)
+- [x] 0.4 Add Vitest + React-Testing-Library
+  - [x] Install dev-deps
+  - [x] Configure `vitest.config.ts`
+  - [x] Write first dummy test (`<App /> renders`)
 - [ ] 0.5 Add GitHub Actions CI
   - [ ] `.github/workflows/ci.yml` (install → lint → test → build)
   - [ ] Verify CI passes on push
