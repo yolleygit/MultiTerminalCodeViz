@@ -82,7 +82,7 @@ exports[`<TerminalWindow /> > should match snapshot for static UI 1`] = `
       class="pb-1 text-gray-400"
     >
       Last login: 
-      Wed, Jun 12, 13:41:30
+      Wed, Jun 12, 20:41:30
        on ttys002
     </p>
     <div
