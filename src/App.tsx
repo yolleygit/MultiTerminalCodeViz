@@ -6,6 +6,7 @@ import { TerminalWindow } from './components/TerminalWindow/TerminalWindow';
 import { ControlsPanel } from './components/ControlsPanel/ControlsPanel';
 import { AsciiTyper } from './pages/AsciiTyper';
 import { useState } from 'react';
+import { Analytics } from "@vercel/analytics/react"
 
 interface Terminal {
   id: string;
@@ -171,6 +172,7 @@ function App() {
             <Route path="/" element={<AppContent />} />
             <Route path="/typer" element={<AsciiTyper />} />
           </Routes>
+          <Analytics />
         </Router>
       </AppProvider>
     </ThemeProvider>
