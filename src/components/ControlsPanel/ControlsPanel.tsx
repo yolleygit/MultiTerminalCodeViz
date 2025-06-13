@@ -127,7 +127,15 @@ export function ControlsPanel({
               >
                 Greg Kamradt
               </a>
-              {' '}• code
+              {' '}• 
+              <a 
+                href="https://github.com/gkamradt/MultiTerminalCodeViz" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 transition-colors underline"
+              >
+                Code
+              </a>
             </p>
           </div>
         </div>

@@ -2,39 +2,91 @@
 
 exports[`<TerminalWindow /> > should match snapshot for static UI 1`] = `
 <div
-  class="terminal-window bg-gray-800 border border-gray-700 rounded-lg overflow-hidden w-full h-full flex flex-col"
+  class="terminal-window bg-black border-black rounded overflow-hidden w-full h-full flex flex-col subpixel-antialiased"
   id="terminal-snapshot-test-window"
 >
   <div
-    class="terminal-title-bar bg-gray-700 h-6 flex items-center px-2 select-none cursor-move"
+    class="terminal-title-bar bg-gray-400 border-b border-gray-500 h-6 flex items-center text-center text-black select-none cursor-move"
   >
     <div
-      class="flex space-x-1 no-drag"
+      class="flex ml-2 items-center space-x-2 no-drag"
     >
       <div
-        class="w-2 h-2 bg-red-500 rounded-full cursor-pointer hover:bg-red-600"
+        class="border-red-900 bg-red-500 shadow-inner rounded-full w-3 h-3 cursor-pointer hover:bg-red-600 transition-colors"
+        title="Close terminal"
       />
       <div
-        class="w-2 h-2 bg-yellow-500 rounded-full cursor-pointer hover:bg-yellow-600"
+        class="border-yellow-900 bg-yellow-500 shadow-inner rounded-full w-3 h-3 cursor-pointer"
       />
       <div
-        class="w-2 h-2 bg-green-500 rounded-full cursor-pointer hover:bg-green-600"
+        class="border-green-900 bg-green-500 shadow-inner rounded-full w-3 h-3 cursor-pointer"
       />
     </div>
     <div
-      class="flex-grow text-center text-xs text-gray-300 font-medium"
+      class="mx-auto pr-16"
     >
-      Test Terminal
+      <p
+        class="text-center text-sm"
+      >
+        Test Terminal
+      </p>
     </div>
-    <div
-      class="w-8 no-drag"
-    />
   </div>
   <div
-    class="terminal-content flex-grow p-2 bg-black text-green-400 font-mono text-xs overflow-y-auto select-text"
+    class="terminal-content flex-grow pl-2 pr-2 pt-1 h-auto text-green-200 font-mono text-xs bg-black overflow-y-auto select-text text-left"
   >
+    <pre>
+      <div
+        class="pb-2 text-purple-400 font-mono text-xs leading-tight"
+      >
+        <div>
+          ██╗   ██╗   ██╗██╗██████╗ ███████╗   ███╗   ███╗ ██████╗ ██████╗ ███████╗
+        </div>
+        <div>
+          ██║   ██║   ██║██║██╔══██╗██╔════╝   ████╗ ████║██╔═══██╗██╔══██╗██╔════╝
+        </div>
+        <div>
+          ██║   ██║   ██║██║██████╔╝█████╗     ██╔████╔██║██║   ██║██████╔╝█████╗  
+        </div>
+        <div>
+          ██║   ╚██╗ ██╔╝██║██╔══██╗██╔══╝     ██║╚██╔╝██║██║   ██║██╔══██╗██╔══╝  
+        </div>
+        <div>
+          ██║    ╚████╔╝ ██║██████╔╝███████╗   ██║ ╚═╝ ██║╚██████╔╝██║  ██║███████╗
+        </div>
+        <div>
+          ╚═╝     ╚═══╝  ╚═╝╚═════╝ ╚══════╝   ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
+        </div>
+        <div />
+        <div>
+          ████████╗██╗  ██╗ █████╗ ███╗   ██╗   ██╗   ██╗ ██████╗ ██╗   ██╗
+        </div>
+        <div>
+          ╚══██╔══╝██║  ██║██╔══██╗████╗  ██║   ╚██╗ ██╔╝██╔═══██╗██║   ██║
+        </div>
+        <div>
+             ██║   ███████║███████║██╔██╗ ██║    ╚████╔╝ ██║   ██║██║   ██║
+        </div>
+        <div>
+             ██║   ██╔══██║██╔══██║██║╚██╗██║     ╚██╔╝  ██║   ██║██║   ██║
+        </div>
+        <div>
+             ██║   ██║  ██║██║  ██║██║ ╚████║      ██║   ╚██████╔╝╚██████╔╝
+        </div>
+        <div>
+             ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝      ╚═╝    ╚═════╝  ╚═════╝ 
+        </div>
+      </div>
+    </pre>
+    <p
+      class="pb-1 text-gray-400"
+    >
+      Last login: 
+      Wed, Jun 12, 13:41:30
+       on ttys002
+    </p>
     <div
-      class="mb-1"
+      class="pb-1"
     >
       <span
         class="text-blue-400"
@@ -42,23 +94,25 @@ exports[`<TerminalWindow /> > should match snapshot for static UI 1`] = `
         user@localhost
       </span>
       <span
-        class="text-white"
+        class="text-green-200"
       >
         :
       </span>
       <span
-        class="text-blue-600"
+        class="text-blue-400"
       >
         ~
       </span>
       <span
-        class="text-white"
+        class="text-green-200"
       >
         $ 
       </span>
       <span
-        class="inline-block w-1 h-3 bg-green-400 animate-pulse ml-1"
-      />
+        class="text-gray-400"
+      >
+        npm run dev
+      </span>
     </div>
   </div>
 </div>
