@@ -34,50 +34,54 @@ Indentation denotes nesting—finish all subtasks before marking the parent as c
 ---
 
 ## 2  Global State & Controls (Context)
-- [ ] 2.1 Create `AppContext.tsx`
-  - [ ] State fields : rows, cols, layout, speed, theme, controlsVisible
-  - [ ] Default values (3×3, uniform, 10 chunks/s, dark, true)
-  - [ ] Bound-checked setter helpers
-- [ ] 2.2 Wrap `<App>` in `AppProvider`
-- [ ] 2.3 Unit tests: default values, bounds enforcement
+- [x] 2.1 Create `AppContext.tsx`
+  - [x] State fields : `numWindows` (1-100), layout ('uniform'/'scattered'), speed, theme, `controlsVisible`
+  - [x] Default values (`numWindows`: 1, uniform, 10 chunks/s, dark, true)
+  - [x] Bound-checked setter helpers (e.g., for `numWindows`)
+- [x] 2.2 Wrap `<App>` in `AppProvider`
+- [x] 2.3 Unit tests: default values, bounds enforcement for `numWindows`
 
 ### ControlsPanel Skeleton
-- [ ] 2.4 Build `<ControlsPanel />`
-  - [ ] Rows +/– buttons (disable at 1 and 15)
-  - [ ] Cols +/– buttons
-  - [ ] Slider 1–20 (speed)
-  - [ ] Toggle: layout (uniform/scattered)
-  - [ ] Toggle: theme (dark/light)
-  - [ ] Hide button (toggles `controlsVisible`)
-- [ ] 2.5 Bind controls to context
-- [ ] 2.6 Unit tests: row increment, slider updates speed
+- [x] 2.4 Build `<ControlsPanel />`
+  - [x] `numWindows` +/– buttons (displays current count, min 1, max 100)
+  - [x] Slider 1–20 (speed)
+  - [x] Toggle: layout (uniform/scattered)
+  - [x] Toggle: theme (dark/light)
+  - [x] Hide button (toggles `controlsVisible`)
+- [x] 2.5 Bind controls to context
+- [x] 2.6 Unit tests: `numWindows` increment/decrement, slider updates speed
 
 ---
 
 ## 3  Terminal Window UI
-- [ ] 3.1 Install `react-draggable` & `react-resizable`
-- [ ] 3.2 Create `<TerminalWindow />`
-  - [ ] Mac terminal chrome (red/yellow/green)
-  - [ ] Monospace content area
-  - [ ] Blinking cursor placeholder
-  - [ ] Wrap with Draggable + Resizable
-    - [ ] Min 200×100px
-    - [ ] Max 1200×800px
-- [ ] 3.3 Snapshot test of static UI
-- [ ] 3.4 Clamping tests for resize
+- [x] 3.1 Install `react-draggable` & `react-resizable`
+- [x] 3.2 Create `<TerminalWindow />`
+  - [x] Mac terminal chrome (red/yellow/green)
+  - [x] Monospace content area
+  - [x] Blinking cursor placeholder
+  - [x] Wrap with Draggable + Resizable
+    - [x] Min 200×100px
+    - [x] Max 1200×800px
+- [x] 3.3 Snapshot test of static UI
+- [x] 3.4 Clamping tests for resize
 
 ---
 
 ## 4  Layout Engine
-- [ ] 4.1 Implement `gridPlacement(rows, cols)` util
-  - [ ] Returns `{ left, top, width, height }` in %
-  - [ ] Unit test 2×2 scenario
-- [ ] 4.2 Render `rows*cols` TerminalWindows positioned by grid util
-- [ ] 4.3 Uniform layout snap logic: on drag stop, snap to nearest grid cell
+- [ ] 4.1 Implement `LayoutManager` utility
+  - [ ] Takes `numWindows` and `layoutMode` as input.
+  - [ ] For 'uniform' mode:
+    - [ ] Calculates optimal grid (rows/columns) based on `numWindows`.
+    - [ ] Returns array of `{ id, left, top, width, height }` in % for each terminal.
+  - [ ] For 'scattered' mode:
+    - [ ] Generates random `{ left, top }` for each terminal.
+  - [ ] Unit test uniform layout for various `numWindows` (e.g., 1, 4, 5 windows).
+- [ ] 4.2 Render `numWindows` TerminalWindows positioned by the LayoutManager.
+- [ ] 4.3 Uniform layout snap logic: on drag stop, snap to nearest calculated grid cell.
 - [ ] 4.4 Scattered layout:
-  - [ ] Randomize all windows on toggle
-  - [ ] No snapping thereafter
-  - [ ] Unit test: positions differ after toggle
+  - [ ] Randomize all window positions on toggle to 'scattered' or when `numWindows` changes in 'scattered' mode.
+  - [ ] No snapping in 'scattered' mode during drag.
+  - [ ] Unit test: positions differ after toggle to 'scattered'.
 
 ---
 
@@ -116,7 +120,6 @@ Indentation denotes nesting—finish all subtasks before marking the parent as c
 - [ ] 7.1 Speed slider updates interval without recreating hook
 - [ ] 7.2 Theme toggle – add `className="dark"` on `<body>`
 - [ ] 7.3 Hide/Show ControlsPanel – CSS transition optional
-- [ ] 7.4 Manual QA: change rows/cols during animation
 
 ---
 
@@ -131,8 +134,8 @@ Indentation denotes nesting—finish all subtasks before marking the parent as c
 ## 9  Smoke Testing & Build
 - [ ] 9.1 (Optional) Add Cypress/Playwright smoke test
   - [ ] Load sample text
-  - [ ] Verify 3×3 grid animates
-  - [ ] Toggle dark/light, scattered, hide menu
+  - [ ] Verify a set number of windows (e.g., 5) animate in 'uniform' grid layout.
+  - [ ] Toggle dark/light, scattered, hide menu, change number of windows.
 - [ ] 9.2 `npm run build` – check bundle size
 - [ ] 9.3 Update CI to upload build artifacts
 

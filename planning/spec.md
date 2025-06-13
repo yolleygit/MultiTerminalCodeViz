@@ -1,4 +1,4 @@
-Absolutely. Here’s a **comprehensive, developer-ready specification** for your “Cloud Code Meme Terminal Visualizer” app, ready to hand off to an engineer. This covers **requirements, architecture, data handling, error handling, and a test plan** in clear detail.
+Absolutely. Here's a **comprehensive, developer-ready specification** for your "Cloud Code Meme Terminal Visualizer" app, ready to hand off to an engineer. This covers **requirements, architecture, data handling, error handling, and a test plan** in clear detail.
 
 ---
 
@@ -6,7 +6,7 @@ Absolutely. Here’s a **comprehensive, developer-ready specification** for your
 
 ### 1. Overview
 
-A static, client-side web app that simulates a grid (or scattered layout) of Mac-style terminal windows, each animating code from a shared, user-supplied text file. The purpose is to create the illusion that multiple “coding terminals” are running, as a meme/visual gag. Users can control the grid size, layout, animation speed, theme, and window arrangement, and can hide the controls for clean screenshots or recording.
+A static, client-side web app that simulates a grid (or scattered layout) of Mac-style terminal windows, each animating code from a shared, user-supplied text file. The purpose is to create the illusion that multiple "coding terminals" are running, as a meme/visual gag. Users can control the grid size, layout, animation speed, theme, and window arrangement, and can hide the controls for clean screenshots or recording.
 
 ---
 
@@ -30,7 +30,7 @@ A static, client-side web app that simulates a grid (or scattered layout) of Mac
 
   * Each window mimics a Mac terminal:
 
-    * Title bar with red/yellow/green “traffic light” buttons.
+    * Title bar with red/yellow/green "traffic light" buttons.
     * Window border, shadow, and authentic color scheme.
     * Dark mode (default) and light mode (toggle).
   * Terminal content area with monospace font.
@@ -43,28 +43,29 @@ A static, client-side web app that simulates a grid (or scattered layout) of Mac
     * **Min size:** 200x100px; **Max size:** 1200x800px (tweak as appropriate).
   * **Draggable:** User can drag and move windows anywhere within the container.
 
-    * **Uniform mode:** Snaps windows to grid positions (dragging moves/switches windows between grid slots).
+    * **Uniform mode:** Windows are arranged in an automatically calculated grid to maximize visibility. Dragging moves/switches windows between these calculated grid slots.
     * **Scattered mode:** Random positions at toggle; after that, user can drag freely; no auto-snap-back even if overlapping or off-screen.
   * **New lines animate at bottom and scroll up** (terminal-style).
-  * **No “fancy” extras** (focus glow, jitter, etc.); just realistic terminal visuals and controls.
+  * **No "fancy" extras** (focus glow, jitter, etc.); just realistic terminal visuals and controls.
 
 #### 3.2. Controls Panel
 
-* **Rows/Columns:**
-
-  * Plus/minus buttons for each; min 1, max 15.
-  * Dynamically adjusts number of terminals in grid.
+* **Number of Windows:**
+  * Plus (+) and minus (-) buttons to control the number of terminal windows.
+  * Displays the current number of windows.
+  * Min: 1, Max: 100.
+  * Dynamically adjusts the number of terminals displayed.
 
 * **Layout Mode:**
 
   * Toggle (checkbox or switch):
 
-    * “Uniform” = grid;
-    * “Scattered” = random positions (re-randomized each toggle).
+    * "Uniform" = terminals are arranged in an automatically calculated grid for optimal viewing.
+    * "Scattered" = random positions (re-randomized each toggle).
 
 * **Speed:**
 
-  * Slider: 1–20 “chunks” per second.
+  * Slider: 1–20 "chunks" per second.
   * **Each terminal receives a randomized speed** based on this global threshold (add ±15% random jitter per terminal on initialization and on slider update).
 
 * **Theme:**
@@ -87,7 +88,7 @@ A static, client-side web app that simulates a grid (or scattered layout) of Mac
 
 * **Animation Logic:**
 
-  * “Token” = chunk of 3–4 characters; single-letter “words” are output in one chunk.
+  * "Token" = chunk of 3–4 characters; single-letter "words" are output in one chunk.
   * Animate by revealing code in these chunks, not per character or per whole word.
   * When the end of the text file is reached, the terminal window **pauses/halts**; it does not loop or reset.
   * **Each terminal animates independently:**
@@ -113,7 +114,7 @@ A static, client-side web app that simulates a grid (or scattered layout) of Mac
 
 * **File Load Error:**
 
-  * User is notified via toast/banner; terminals show “No data loaded” message.
+  * User is notified via toast/banner; terminals show "No data loaded" message.
 * **Invalid File Type:**
 
   * Reject with user-facing message.
@@ -154,15 +155,16 @@ A static, client-side web app that simulates a grid (or scattered layout) of Mac
 
 * **Controls:**
 
-  * Add/remove rows/columns and confirm grid changes dynamically.
-  * Toggle between uniform/scattered layouts; ensure terminals randomize positions.
+  * Increase/decrease the number of windows using +/- buttons and confirm terminals are added/removed.
+  * In "Uniform" mode, verify the grid re-arranges dynamically to best fit the current number of windows.
+  * Toggle between uniform/scattered layouts; ensure terminals arrange into an optimal grid or randomize positions accordingly.
   * Toggle dark/light mode and verify UI updates everywhere.
   * Hide/show menu and confirm clean screenshot/video capability.
 
 * **Window Interactivity:**
 
   * Drag and resize terminals; ensure min/max respected.
-  * In uniform mode, terminals snap to grid on drag; in scattered, free-form movement.
+  * In uniform mode, terminals snap to the auto-calculated grid positions on drag; in scattered, free-form movement.
   * Try dragging out of bounds and resizing to limits.
 
 * **Edge Cases:**
@@ -186,9 +188,9 @@ A static, client-side web app that simulates a grid (or scattered layout) of Mac
 
 * Add sound effects (typing sounds) for realism.
 * Support for multiple text files, random file per terminal.
-* “Record” mode: auto-hides mouse/cursor during animation.
+* "Record" mode: auto-hides mouse/cursor during animation.
 
 ---
 
-**That’s the full spec.**
+**That's the full spec.**
 If you want this as a Markdown file or formatted for project management (like Notion/Jira), just say the word. Anything else you want to clarify or add?

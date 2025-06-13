@@ -11,13 +11,13 @@ Below is a **three-stage deliverable**:
 | # | Phase                        | Key Outputs                                                                                                                                    | Notes                                                                           |
 | - | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | 0 | **Project Scaffold**         | Vite + React + TypeScript repo; Tailwind; ESLint + Prettier; Vitest + React-Testing-Library; GitHub Actions CI                                 | Pure static bundle deployable to Vercel/Netlify                                 |
-| 1 | **Core State & Controls**    | Global context for rows, cols, layout, speed, theme; `<ControlsPanel />` with +/- for grid, slider (1-20), toggles for theme/layout, hide/show | State lives in React Context; no external store                                 |
+| 1 | **Core State & Controls**    | Global context for `numWindows` (1-100), layout ('uniform'/'scattered'), speed, theme; `<ControlsPanel />` with +/- for `numWindows`, slider (1-20), toggles for theme/layout, hide/show | State lives in React Context; no external store. Default `numWindows` is 1.     |
 | 2 | **Terminal Shell**           | `<TerminalWindow />` component with: Mac chrome, resizable/ draggable wrapper, blinking cursor placeholder                                     | Use `react-draggable` + `react-resizable`; dimensions min 200×100, max 1200×800 |
-| 3 | **Layout Manager**           | Uniform grid placement & scattered random placement; swap logic when dragging in grid                                                          | Simple 2-D array for grid cells                                                 |
+| 3 | **Layout Manager**           | Uniform (auto-calculated grid based on `numWindows` to maximize visibility) & scattered random placement; snap-to-grid logic when dragging in uniform mode | Logic to calculate optimal grid (rows/cols) based on `numWindows` for uniform layout. |
 | 4 | **File Loader**              | `<FileLoader />` drag-and-drop / click input; reads `.txt` via FileReader; pushes char array into global store                                 | Graceful errors (“Invalid file”, “Empty file”)                                  |
 | 5 | **Token Animator**           | Hook (`useTokenStream`) that: picks random start offset, reveals 3-4 char “chunks” at an interval derived from global speed ±15 % jitter       | Exposes next-token callback to TerminalWindow                                   |
 | 6 | **Integration**              | Connect animator to windows; implement scroll-up behaviour and cursor; stop at EOF                                                             | Use virtualized DOM list if perf issues                                         |
-| 7 | **Theme & Styling**          | Dark & light Tailwind themes; theme toggle; global CSS vars for colours                                                                        | Tailwind’s `dark:` variants                                                     |
+| 7 | **Theme & Styling**          | Dark & light Tailwind themes; theme toggle; global CSS vars for colours                                                                        | Tailwind's `dark:` variants                                                     |
 | 8 | **Hide Menu & Final Polish** | Toggle to collapse controls; ensure no layout shift; smoke tests                                                                               | Optional: screenshot mode CSS class                                             |
 | 9 | **Deployment**               | Build & deploy script; CI verifies `npm run build` and runs tests                                                                              | README with usage instructions                                                  |
 
@@ -29,9 +29,9 @@ Below is a **three-stage deliverable**:
 
 1. **Repo init & CI**
 2. **Tailwind + basic App shell**
-3. **Global Context & Controls skeleton**
+3. **Global Context (`numWindows`) & Controls skeleton**
 4. **TerminalWindow static UI**
-5. **Grid layout engine**
+5. **Layout engine (uniform auto-grid & scattered)**
 6. **Drag/resize support**
 7. **File loading & error states**
 8. **Token animation hook**
@@ -46,20 +46,20 @@ Below is a **three-stage deliverable**:
 | 1C    | Add Vitest + first passing dummy test                             |
 | 1D    | GitHub Actions CI workflow                                        |
 | 2A    | Install Tailwind; configure `tailwind.config.js`                  |
-| 2B    | Minimal `<App>` renders “Hello world”, Tailwind classes tested    |
-| 3A    | Create `AppContext` (rows, cols, theme, layout, speed)            |
-| 3B    | Build bare `<ControlsPanel>` with +/- rows                        |
-| 3C    | Tests: context defaults, +/- logic                                |
+| 2B    | Minimal `<App>` renders "Hello world", Tailwind classes tested    |
+| 3A    | Create `AppContext` (`numWindows`, theme, layout, speed)            |
+| 3B    | Build bare `<ControlsPanel>` with +/- `numWindows` (1-100)        |
+| 3C    | Tests: context defaults (`numWindows`=1), +/- logic (1-100 bounds) |
 | 4A    | Static TerminalWindow with Mac chrome HTML/CSS                    |
 | 4B    | Jest DOM snapshot for window UI                                   |
-| 5A    | GridPlacement util returning coordinates from rows/cols           |
-| 5B    | Render N windows in grid; unit test coordinate math               |
+| 5A    | LayoutManager util returning coordinates for uniform (auto-grid from `numWindows`) and scattered layouts |
+| 5B    | Render `numWindows` instances; unit test coordinate math for uniform layout (e.g., for 1, 2, 3, 4, 5 windows) |
 | 6A    | Integrate `react-draggable` & `react-resizable` on TerminalWindow |
 | 6B    | Min/max dim constraints; tests for size clamping                  |
 | 7A    | `<FileLoader>`: accept text file, FileReader pipeline             |
 | 7B    | Error branch tests (empty, wrong MIME)                            |
 | 8A    | `useTokenStream` hook with param: text, speed, jitter             |
-| 8B    | Unit test: given “abcdef”, speed =1 chunk/s → emits 3-char tokens |
+| 8B    | Unit test: given "abcdef", speed =1 chunk/s → emits 3-char tokens |
 | 8C    | Connect hook to TerminalWindow; implement scroll container        |
 | 9A    | Theme toggle: dark vs light class on `<body>`                     |
 | 9B    | Hide/show ControlsPanel; integration tests                        |
@@ -106,7 +106,7 @@ Add GitHub Actions workflow `.github/workflows/ci.yml`.
 - Steps: install deps, lint, test, build
 
 **Tests**
-- Push a commit in the PR containing the workflow and verify all steps succeed (use `--if-present` for lint).
+- Push a commit in the PR containing the workflow and verify all steps succeed (use `--if_present` for lint).
 
 Return updated files and screenshot of workflow run (or textual log excerpt).
 ```
@@ -131,36 +131,34 @@ Provide updated files + passing test output.
 
 ### Prompt 04 – Global App Context
 
-````text
+```text
 Create `src/context/AppContext.tsx`.
 
 **State**
 ```ts
 {
- rows: number; // 1–15
- cols: number; // 1–15
+ numWindows: number; // 1–100
  layout: 'uniform' | 'scattered';
  speed: number; // 1–20
  theme: 'dark' | 'light';
 }
-````
+```
 
 **Features**
 
-* Default values: 3×3, uniform, speed 10, dark.
+* Default values: `numWindows`: 1, uniform, speed 10, dark.
 * Provider + custom hook `useAppContext`.
-* Unit tests: default state, bounds checking for setters.
+* Unit tests: default state, bounds checking for setters (`numWindows` 1-100).
 
 Expose the Provider at `<App>` root. Show updated tests passing.
-
-````
+```
 
 ### Prompt 05 – Controls Panel Skeleton  
 ```text
 Build `<ControlsPanel />`.
 
 **UI (no styling detail yet)**
-- +/- buttons for rows, cols (disable at limits)
+- +/- buttons for number of windows (label shows current `numWindows`, disable at 1 and 100)
 - Slider (1–20) for speed
 - Toggle switches for layout, theme
 - Hide button (temporarily just `console.log('hide')`)
@@ -168,11 +166,12 @@ Build `<ControlsPanel />`.
 State is bound to `AppContext`.
 
 **Tests**
-- Clicking + increases rows until 15 then disables
+- Clicking + increases `numWindows` in context until 100 then disables button
+- Clicking - decreases `numWindows` in context until 1 then disables button
 - Slider value updates speed in context
 
 Return component, context updates, and passing test logs.
-````
+```
 
 ### Prompt 06 – TerminalWindow Static UI
 
@@ -193,15 +192,25 @@ Return new files, CSS, and snapshot test results.
 ### Prompt 07 – Grid Layout Engine
 
 ```text
-Implement `gridPlacement(rows, cols)` util returning coordinates `{x, y, w, h}` for each cell (0–100 %).
+Implement layout logic within a `LayoutManager` or similar utility.
 
-Render `rows*cols` TerminalWindow instances positioned via inline `style={{left, top, width, height}}`.
+**Functionality**
+- Accept `numWindows` and `layoutMode` ('uniform' | 'scattered').
+- For 'uniform' mode:
+    - Calculate an optimal grid (rows and columns) based on `numWindows` to display all terminals clearly (e.g., for 4 windows, a 2x2 grid; for 5 windows, perhaps a 2x3 or 3x2 arrangement leaving one cell empty or adjusting cell sizes).
+    - Return an array of coordinate objects `{id, x, y, w, h}` for each terminal (0–100 % for positioning within a container).
+- For 'scattered' mode:
+    - Generate random `{x, y}` coordinates for each terminal within viewport bounds. Width and height can be default or individually stored if allowing resize in scattered mode.
+
+Render `numWindows` TerminalWindow instances. In 'uniform' mode, position them using the calculated grid coordinates via inline `style={{left, top, width, height}}`.
 
 **Tests**
-- 2×2 grid returns 4 coords at 0%,50% increments
-- <App> snapshot shows correct number of windows.
+- Given `numWindows = 1` (uniform), returns 1 coordinate for a full-container cell.
+- Given `numWindows = 4` (uniform), returns 4 coordinates for a 2x2 grid.
+- Given `numWindows = 5` (uniform), returns 5 coordinates for a well-distributed layout (e.g., 2 rows, 3 columns on top row, 2 on bottom, or similar).
+- <App> snapshot shows correct number of windows positioned.
 
-Focus only on uniform layout; scattered later.
+Focus on 'uniform' layout calculations first. Scattered can be simpler random positions initially.
 ```
 
 ### Prompt 08 – Drag & Resize Integration
@@ -212,10 +221,10 @@ Add `react-draggable` and `react-resizable`.
 **Changes**
 - Wrap TerminalWindow in Draggable + Resizable.
 - Constraints: min 200×100, max 1200×800.
-- In uniform layout, snap to nearest grid cell on `onStop`.
+- In 'uniform' layout, dragging a window should attempt to snap it to the nearest available calculated grid cell on `onStop`. This might involve swapping with an existing window or moving to an empty calculated slot.
 
 **Tests**
-- Simulate drag event; assert new position snaps.
+- Simulate drag event in 'uniform' mode; assert new position snaps to a calculated grid cell.
 - Simulate resize; assert clamped dims.
 
 Provide updated components and tests.
@@ -273,14 +282,19 @@ Wire useTokenStream into TerminalWindow.
 ### Prompt 12 – Scattered Layout Toggle
 
 ```text
-Add scattered layout.
+Add scattered layout functionality to the LayoutManager and connect to the UI toggle.
 
-**Algorithm**
-- On toggle, iterate all windows and set random `{left, top}` inside viewport bounds
-- No snapping in scattered mode
+**Algorithm for Scattered Layout**
+- On toggle to 'scattered', or when `numWindows` changes while in 'scattered' mode: iterate through all `numWindows` and assign each a random `{left, top}` position within the main viewport container.
+- Windows can overlap in scattered mode.
+- Dragging in 'scattered' mode allows free movement without snapping.
+
+**Algorithm for Uniform Layout (Refinement)**
+- On toggle to 'uniform', or when `numWindows` changes while in 'uniform' mode: re-calculate the optimal grid and assign/move windows to these grid positions.
 
 **Tests**
-- Toggle layout; assert positions differ from grid coords
+- Toggle layout to 'scattered'; assert terminal positions are randomized and differ from any grid-based coordinates.
+- Toggle layout to 'uniform'; assert terminal positions conform to the dynamically calculated optimal grid.
 ```
 
 ### Prompt 13 – Theme Toggle & Hide Menu
@@ -335,8 +349,8 @@ Add Cypress or Playwright smoke test (optional local run).
 
 Ensure:
 - File loads
-- 3×3 grid animates
-- Controls toggle successfully
+- A set number of windows (e.g., 5) appear and animate in 'uniform' grid layout.
+- Controls (number of windows, layout toggle, speed, theme, hide) function successfully.
 
 Then run `npm run build` and provide build folder size stats.
 ```
@@ -354,4 +368,4 @@ No code changes beyond config.
 ---
 
 **Done.**
-Feed the prompts one-by-one to a code-gen LLM and you’ll march safely from empty repo to fully working meme-terminal app, with tests guarding every increment.
+Feed the prompts one-by-one to a code-gen LLM and you'll march safely from empty repo to fully working meme-terminal app, with tests guarding every increment.
