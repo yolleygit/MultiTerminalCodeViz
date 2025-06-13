@@ -19,7 +19,7 @@ export function useTypewriter({
   const [displayedLines, setDisplayedLines] = useState<TerminalLine[]>([]);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Generate random token size (3-6 characters)
   const getTokenSize = () => Math.floor(Math.random() * 2) + 10; // 3-6 chars

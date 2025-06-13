@@ -39,7 +39,7 @@ export function TerminalWindow({
   // Use fixed date during testing for snapshot consistency
   const [loginTime] = useState(() => {
     // Check if we're in a test environment by looking for testing-specific props or environment
-    const isTestEnv = id.includes('test') || process.env.NODE_ENV === 'test';
+    const isTestEnv = id.includes('test');
     return isTestEnv 
       ? new Date('2024-06-12T20:41:30.000Z') // Fixed test date
       : new Date(Date.now() - 12 * 60 * 60 * 1000);
@@ -78,7 +78,7 @@ export function TerminalWindow({
 
   return (
     <Draggable 
-      nodeRef={nodeRef}
+      nodeRef={nodeRef as React.RefObject<HTMLElement>}
       handle=".terminal-title-bar" 
       position={initialPosition}
       cancel=".no-drag, .react-resizable-handle"
