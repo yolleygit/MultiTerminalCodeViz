@@ -47,15 +47,15 @@ export function TerminalWindow({
   
   // Variable speed per terminal (±25% of base speed)
   const [terminalSpeed] = useState(() => {
-    const baseSpeed = 200; // Base speed in ms
-    const variation = 0.25; // ±25%
+    const baseSpeed = 50; // Base speed in ms
+    const variation = 0.55; // ±25%
     const randomFactor = 1 + (Math.random() - 0.5) * 2 * variation; // Random between 0.75 and 1.25
     return Math.round(baseSpeed * randomFactor);
   });
   
   // Terminal output animation
-  const outputTypes = ['development', 'build', 'error', 'conversation', 'troubleshooting', 'epic'] as const;
-  // const outputTypes = ['epic'] as const;
+  // const outputTypes = ['development', 'build', 'error', 'conversation', 'troubleshooting', 'epic'] as const;
+  const outputTypes = ['conversation', 'troubleshooting', 'epic'] as const;
   const terminalIndex = parseInt(id.split('-')[1]) || 0;
   const outputType = outputTypes[terminalIndex % outputTypes.length];
   const { displayedLines, isTyping } = useTypewriter({
