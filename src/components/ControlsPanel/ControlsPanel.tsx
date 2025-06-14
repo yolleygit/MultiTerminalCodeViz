@@ -127,14 +127,21 @@ export function ControlsPanel({
               >
                 Greg Kamradt
               </a>
-              {' '}• 
-              <a 
-                href="https://github.com/gkamradt/MultiTerminalCodeViz" 
-                target="_blank" 
+              {' '}•
+              <a
+                href="https://github.com/gkamradt/MultiTerminalCodeViz"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-400 hover:text-blue-300 transition-colors underline"
               >
                 Code
+              </a>
+              {' '}•
+              <a
+                href="/typer"
+                className="text-blue-400 hover:text-blue-300 transition-colors underline"
+              >
+                use the vibe typer
               </a>
             </p>
           </div>
