@@ -74,8 +74,8 @@ export function AsciiTyper() {
   };
 
   return (
-    <div 
-      className="min-h-screen p-8 transition-colors duration-300"
+    <div
+      className="h-screen overflow-y-auto p-8 transition-colors duration-300"
       style={{ backgroundColor }}
     >
       <div className="max-w-6xl mx-auto">
