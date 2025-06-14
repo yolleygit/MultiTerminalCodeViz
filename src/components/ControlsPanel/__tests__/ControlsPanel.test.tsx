@@ -29,6 +29,8 @@ describe('ControlsPanel', () => {
     expect(screen.getByText('1 terminal')).toBeInTheDocument();
     expect(screen.getByText('+')).toBeInTheDocument();
     expect(screen.getByText('-')).toBeInTheDocument();
+    expect(screen.getByText('+10')).toBeInTheDocument();
+    expect(screen.getByText('-10')).toBeInTheDocument();
     expect(screen.getByText('Arrange')).toBeInTheDocument();
     expect(screen.getByText(/Theme:/)).toBeInTheDocument();
     expect(screen.getByText(/Made with ❤️ by/)).toBeInTheDocument();
@@ -57,6 +59,28 @@ describe('ControlsPanel', () => {
     expect(mockOnTerminalCountChange).toHaveBeenCalledWith(2);
   });
 
+  it('should call onTerminalCountChange when +10 button is clicked', () => {
+    const mockOnTerminalCountChange = vi.fn();
+    const mockOnArrangeTerminals = vi.fn();
+
+    render(
+      <ThemeProvider>
+        <AppProvider>
+          <ControlsPanel
+            terminalCount={1}
+            onTerminalCountChange={mockOnTerminalCountChange}
+            onArrangeTerminals={mockOnArrangeTerminals}
+          />
+        </AppProvider>
+      </ThemeProvider>
+    );
+
+    const incrementTenButton = screen.getByText('+10');
+    fireEvent.click(incrementTenButton);
+
+    expect(mockOnTerminalCountChange).toHaveBeenCalledWith(11);
+  });
+
   it('should call onArrangeTerminals when Arrange button is clicked', () => {
     const mockOnTerminalCountChange = vi.fn();
     const mockOnArrangeTerminals = vi.fn();
@@ -81,8 +105,30 @@ describe('ControlsPanel', () => {
 
   it('should disable decrement button when at minimum (1)', () => {
     renderControlsPanel();
-    
+
     const decrementButton = screen.getByText('-');
     expect(decrementButton).toBeDisabled();
   });
-}); 
+
+  it('should call onTerminalCountChange when -10 button is clicked', () => {
+    const mockOnTerminalCountChange = vi.fn();
+    const mockOnArrangeTerminals = vi.fn();
+
+    render(
+      <ThemeProvider>
+        <AppProvider>
+          <ControlsPanel
+            terminalCount={20}
+            onTerminalCountChange={mockOnTerminalCountChange}
+            onArrangeTerminals={mockOnArrangeTerminals}
+          />
+        </AppProvider>
+      </ThemeProvider>
+    );
+
+    const decrementTenButton = screen.getByText('-10');
+    fireEvent.click(decrementTenButton);
+
+    expect(mockOnTerminalCountChange).toHaveBeenCalledWith(10);
+  });
+});
