@@ -76,6 +76,36 @@ export const terminalThemes: Record<string, TerminalTheme> = {
       secondary: 'text-green-500',
       command: 'text-green-600'
     }
+  },
+  dracula: {
+    name: 'Dracula',
+    background: 'bg-gray-900',
+    colors: {
+      muted: 'text-gray-400',
+      success: 'text-green-400',
+      warning: 'text-yellow-500',
+      error: 'text-red-500',
+      info: 'text-cyan-400',
+      accent: 'text-purple-400',
+      primary: 'text-pink-300',
+      secondary: 'text-gray-300',
+      command: 'text-purple-500'
+    }
+  },
+  solarized: {
+    name: 'Solarized Dark',
+    background: 'bg-[#002b36]',
+    colors: {
+      muted: 'text-[#839496]',
+      success: 'text-[#859900]',
+      warning: 'text-[#b58900]',
+      error: 'text-[#dc322f]',
+      info: 'text-[#268bd2]',
+      accent: 'text-[#2aa198]',
+      primary: 'text-[#eee8d5]',
+      secondary: 'text-[#839496]',
+      command: 'text-[#586e75]'
+    }
   }
 };
 
