@@ -23,7 +23,7 @@ const PRESET_COLORS = [
 
 export function AsciiTyper() {
   const [lines, setLines] = useState<TextLine[]>([
-    { id: '1', text: '' }
+    { id: '1', text: 'Hello! World!' }
   ]);
   const [backgroundColor, setBackgroundColor] = useState('#000000');
   const [textColor, setTextColor] = useState('#22c55e');
@@ -89,7 +89,80 @@ export function AsciiTyper() {
           </p>
         </div>
 
-        {/* Controls */}
+        {/* ASCII Preview - Hero Section */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold" style={{ color: textColor }}>
+              ASCII Preview
+            </h3>
+            <button
+              onClick={copyToClipboard}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition-colors"
+            >
+              Copy to Clipboard
+            </button>
+          </div>
+          
+          <div 
+            className="p-6 rounded-lg border-2 font-mono text-xs leading-tight overflow-auto"
+            style={{ 
+              backgroundColor: backgroundColor,
+              borderColor: textColor,
+              color: textColor
+            }}
+          >
+            <pre>
+              {generatePreview().map((line, index) => (
+                <div key={index} className="whitespace-pre">
+                  {line || '\u00A0'} {/* Non-breaking space for empty lines */}
+                </div>
+              ))}
+            </pre>
+          </div>
+        </div>
+
+        {/* Text Input Lines */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold" style={{ color: textColor }}>
+              Text Lines
+            </h3>
+            <button
+              onClick={addNewLine}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors flex items-center gap-2"
+            >
+              <span className="text-xl">+</span>
+              Add Line
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {lines.map((line, index) => (
+              <div key={line.id} className="flex gap-3 items-center">
+                <span className="text-sm font-mono w-8" style={{ color: textColor }}>
+                  {index + 1}:
+                </span>
+                <input
+                  type="text"
+                  value={line.text}
+                  onChange={(e) => updateLineText(line.id, e.target.value)}
+                  placeholder="Type your text here..."
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {lines.length > 1 && (
+                  <button
+                    onClick={() => removeLine(line.id)}
+                    className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Color Controls */}
         <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Background Color */}
           <div>
@@ -141,79 +214,6 @@ export function AsciiTyper() {
               onChange={(e) => setTextColor(e.target.value)}
               className="mt-2 w-full h-8 rounded cursor-pointer"
             />
-          </div>
-        </div>
-
-        {/* Text Input Lines */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold" style={{ color: textColor }}>
-              Text Lines
-            </h3>
-            <button
-              onClick={addNewLine}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors flex items-center gap-2"
-            >
-              <span className="text-xl">+</span>
-              Add Line
-            </button>
-          </div>
-          
-          <div className="space-y-3">
-            {lines.map((line, index) => (
-              <div key={line.id} className="flex gap-3 items-center">
-                <span className="text-sm font-mono w-8" style={{ color: textColor }}>
-                  {index + 1}:
-                </span>
-                <input
-                  type="text"
-                  value={line.text}
-                  onChange={(e) => updateLineText(line.id, e.target.value)}
-                  placeholder="Type your text here..."
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {lines.length > 1 && (
-                  <button
-                    onClick={() => removeLine(line.id)}
-                    className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Preview */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold" style={{ color: textColor }}>
-              ASCII Preview
-            </h3>
-            <button
-              onClick={copyToClipboard}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition-colors"
-            >
-              Copy to Clipboard
-            </button>
-          </div>
-          
-          <div 
-            className="p-6 rounded-lg border-2 font-mono text-xs leading-tight overflow-auto"
-            style={{ 
-              backgroundColor: backgroundColor,
-              borderColor: textColor,
-              color: textColor
-            }}
-          >
-            <pre>
-              {generatePreview().map((line, index) => (
-                <div key={index} className="whitespace-pre">
-                  {line || '\u00A0'} {/* Non-breaking space for empty lines */}
-                </div>
-              ))}
-            </pre>
           </div>
         </div>
 
