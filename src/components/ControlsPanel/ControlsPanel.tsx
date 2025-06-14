@@ -25,9 +25,23 @@ export function ControlsPanel({
     }
   };
 
+  const handleIncrementByTen = () => {
+    if (terminalCount < maxTerminals) {
+      const newCount = Math.min(terminalCount + 10, maxTerminals);
+      onTerminalCountChange(newCount);
+    }
+  };
+
   const handleDecrement = () => {
     if (terminalCount > minTerminals) {
       onTerminalCountChange(terminalCount - 1);
+    }
+  };
+
+  const handleDecrementByTen = () => {
+    if (terminalCount > minTerminals) {
+      const newCount = Math.max(terminalCount - 10, minTerminals);
+      onTerminalCountChange(newCount);
     }
   };
 
@@ -67,7 +81,17 @@ export function ControlsPanel({
           </div>
 
           {/* Terminal Count Control */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center space-x-3">
+            <button
+              onClick={handleDecrementByTen}
+              disabled={terminalCount <= minTerminals}
+              className="w-8 h-8 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded font-bold transition-colors border-0 p-0"
+              style={{ backgroundColor: terminalCount <= minTerminals ? '#4b5563' : '#dc2626' }}
+              aria-label="Remove ten terminals"
+            >
+              -10
+            </button>
+
             <button
               onClick={handleDecrement}
               disabled={terminalCount <= minTerminals}
@@ -77,11 +101,11 @@ export function ControlsPanel({
             >
               -
             </button>
-            
+
             <span className="text-white font-mono text-sm min-w-[3rem] text-center">
               {terminalCount} terminal{terminalCount !== 1 ? 's' : ''}
             </span>
-            
+
             <button
               onClick={handleIncrement}
               disabled={terminalCount >= maxTerminals}
@@ -90,6 +114,16 @@ export function ControlsPanel({
               aria-label="Add terminal"
             >
               +
+            </button>
+
+            <button
+              onClick={handleIncrementByTen}
+              disabled={terminalCount >= maxTerminals}
+              className="w-8 h-8 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded font-bold transition-colors border-0 p-0"
+              style={{ backgroundColor: terminalCount >= maxTerminals ? '#4b5563' : '#059669' }}
+              aria-label="Add ten terminals"
+            >
+              +10
             </button>
           </div>
 
