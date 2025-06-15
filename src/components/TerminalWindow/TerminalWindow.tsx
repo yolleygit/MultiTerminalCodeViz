@@ -113,7 +113,8 @@ export function TerminalWindow({
             id={`terminal-${id}`}
           >
             {/* Title Bar */}
-            <div className="terminal-title-bar bg-gray-400 border-b border-gray-500 h-6 flex items-center text-center text-black select-none cursor-move">
+            <div className="terminal-title-bar bg-gray-400 border-b border-gray-500 h-6 flex items-center text-center text-black select-none cursor-move"
+                 onMouseDown={() => onFocus && onFocus(id)}>
               {/* Traffic Lights */}
               <div className="flex ml-2 items-center space-x-2 no-drag">
                 <div 
@@ -134,6 +135,7 @@ export function TerminalWindow({
             <div 
               ref={contentRef}
               className={`terminal-content flex-grow pl-2 pr-2 pt-1 h-auto ${getColorForRole('primary')} font-mono text-xs ${currentTheme.background} overflow-y-auto select-text text-left`}
+              onMouseDown={() => onFocus && onFocus(id)}
             >
               {/* ASCII Art Header */}
               <pre>
