@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { generateAsciiArt } from '../utils/asciiArt';
 
 interface TextLine {
@@ -27,6 +27,7 @@ export function AsciiTyper() {
   ]);
   const [backgroundColor, setBackgroundColor] = useState('#000000');
   const [textColor, setTextColor] = useState('#22c55e');
+  const previewRef = useRef<HTMLDivElement>(null);
 
   const addNewLine = () => {
     const newId = Date.now().toString();
@@ -73,6 +74,42 @@ export function AsciiTyper() {
     navigator.clipboard.writeText(asciiText);
   };
 
+  const copyImageToClipboard = async () => {
+    if (!previewRef.current) return;
+
+    try {
+      // Use html2canvas to capture the preview area
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(previewRef.current, {
+        backgroundColor: backgroundColor,
+        scale: 2, // Higher resolution
+        useCORS: true,
+      });
+
+      // Convert canvas to blob
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+        } catch (error) {
+          console.error('Failed to copy image to clipboard:', error);
+          // Fallback: create download link
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'ascii-art.png';
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      }, 'image/png');
+    } catch (error) {
+      console.error('Failed to capture image:', error);
+    }
+  };
+
   return (
     <div
       className="h-screen overflow-y-auto p-8 transition-colors duration-300"
@@ -95,15 +132,24 @@ export function AsciiTyper() {
             <h3 className="text-lg font-semibold" style={{ color: textColor }}>
               ASCII Preview
             </h3>
-            <button
-              onClick={copyToClipboard}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition-colors"
-            >
-              Copy to Clipboard
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={copyToClipboard}
+                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition-colors"
+              >
+                Copy Text
+              </button>
+              <button
+                onClick={copyImageToClipboard}
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded transition-colors"
+              >
+                Copy Image
+              </button>
+            </div>
           </div>
           
           <div 
+            ref={previewRef}
             className="p-6 rounded-lg border-2 font-mono text-xs leading-tight overflow-auto"
             style={{ 
               backgroundColor: backgroundColor,
@@ -222,7 +268,7 @@ export function AsciiTyper() {
           <p>• Type in the text fields above to see ASCII art generated in real-time</p>
           <p>• Use the + button to add new lines</p>
           <p>• Customize colors using the color pickers or preset swatches</p>
-          <p>• Copy the generated ASCII art to use elsewhere</p>
+          <p>• Copy the generated ASCII art as text or image to use elsewhere</p>
         </div>
       </div>
     </div>
