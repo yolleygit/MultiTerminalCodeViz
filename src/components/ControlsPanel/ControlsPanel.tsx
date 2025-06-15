@@ -7,6 +7,8 @@ interface ControlsPanelProps {
   onArrangeTerminals?: () => void;
   minTerminals?: number;
   maxTerminals?: number;
+  catCount?: number;
+  onRemoveAllCats?: () => void;
 }
 
 export function ControlsPanel({ 
@@ -14,7 +16,9 @@ export function ControlsPanel({
   onTerminalCountChange,
   onArrangeTerminals,
   minTerminals = 1, 
-  maxTerminals = 100 
+  maxTerminals = 100,
+  catCount = 0,
+  onRemoveAllCats
 }: ControlsPanelProps) {
   const [isVisible, setIsVisible] = useState(true);
   const { themeName, setTheme, getThemeNames } = useTheme();
@@ -149,6 +153,25 @@ export function ControlsPanel({
             Theme: {themeName}
           </button>
 
+          {/* Cat Controls (only show if cats exist) */}
+          {catCount > 0 && onRemoveAllCats && (
+            <div className="space-y-2">
+              <div className="text-center">
+                <span className="text-white font-mono text-xs">
+                  🐱 {catCount} vibe cat{catCount !== 1 ? 's' : ''}
+                </span>
+              </div>
+              <button
+                onClick={onRemoveAllCats}
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white rounded py-2 px-3 text-sm font-medium transition-colors border-0"
+                style={{ backgroundColor: '#ea580c' }}
+                aria-label="Remove all cats"
+              >
+                Remove Cats
+              </button>
+            </div>
+          )}
+
           {/* Footer */}
           <div className="pt-3 border-t border-gray-600 text-center">
             <p className="text-gray-400 text-xs">
@@ -161,7 +184,7 @@ export function ControlsPanel({
               >
                 Greg Kamradt
               </a>
-              {' '}•
+              <br />
               <a
                 href="https://github.com/gkamradt/MultiTerminalCodeViz"
                 target="_blank"
@@ -170,12 +193,12 @@ export function ControlsPanel({
               >
                 Code
               </a>
-              {' '}•
+              {' '} • {' '}
               <a
                 href="/typer"
-                className="text-blue-400 hover:text-blue-300 transition-colors underline"
+                className="text-green-400 hover:text-green-300 transition-colors underline"
               >
-                use the vibe typer
+                vibe typer
               </a>
             </p>
           </div>

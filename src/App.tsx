@@ -4,6 +4,7 @@ import { AppProvider } from './contexts/AppContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { TerminalWindow } from './components/TerminalWindow/TerminalWindow';
 import { ControlsPanel } from './components/ControlsPanel/ControlsPanel';
+import { BouncyCat } from './components/BouncyCat/BouncyCat';
 import { AsciiTyper } from './pages/AsciiTyper';
 import { useState } from 'react';
 import { Analytics } from "@vercel/analytics/react"
@@ -40,7 +41,11 @@ function AppContent() {
     },
   ]);
 
+  // Bouncy cats state
+  const [cats, setCats] = useState<string[]>([]);
+  
   const terminalCount = terminals.length;
+  const expectedCatCount = Math.floor(terminalCount / 10);
 
   const handleTerminalCountChange = (count: number) => {
     setTerminals((prev) => {
@@ -63,12 +68,40 @@ function AppContent() {
       }
 
       setHighestZIndex(newZ);
+      
+      // Update cats based on new terminal count
+      const newExpectedCatCount = Math.floor(count / 10);
+      setCats(prevCats => {
+        if (newExpectedCatCount > prevCats.length) {
+          // Add new cats
+          const newCats = [...prevCats];
+          for (let i = prevCats.length; i < newExpectedCatCount; i++) {
+            newCats.push(`cat-${Date.now()}-${i}`);
+          }
+          return newCats;
+        } else if (newExpectedCatCount < prevCats.length) {
+          // Remove excess cats if terminals are removed
+          return prevCats.slice(0, newExpectedCatCount);
+        }
+        return prevCats;
+      });
+      
       return updated;
     });
   };
 
   const handleTerminalClose = (terminalId: string) => {
-    setTerminals((prev) => prev.filter(terminal => terminal.id !== terminalId));
+    setTerminals((prev) => {
+      const updated = prev.filter(terminal => terminal.id !== terminalId);
+      // Update cats when terminal count changes
+      const newExpectedCatCount = Math.floor(updated.length / 10);
+      setCats(prevCats => prevCats.slice(0, newExpectedCatCount));
+      return updated;
+    });
+  };
+
+  const handleRemoveAllCats = () => {
+    setCats([]);
   };
 
   const handlePositionChange = (terminalId: string, position: { x: number; y: number }) => {
@@ -154,6 +187,8 @@ function AppContent() {
         terminalCount={terminalCount}
         onTerminalCountChange={handleTerminalCountChange}
         onArrangeTerminals={handleArrangeTerminals}
+        catCount={cats.length}
+        onRemoveAllCats={handleRemoveAllCats}
       />
 
       {/* Terminal Container */}
@@ -179,6 +214,14 @@ function AppContent() {
           />
         ))}
       </div>
+
+      {/* Bouncy Cats - render above everything */}
+      {cats.map((catId) => (
+        <BouncyCat 
+          key={catId} 
+          id={catId}
+        />
+      ))}
     </div>
   );
 }
