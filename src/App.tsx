@@ -53,7 +53,7 @@ function AppContent() {
   const [cats, setCats] = useState<string[]>([]);
   
   // Use actual count for cats, not rendered count - allow up to 1000 cats
-  const expectedCatCount = Math.min(Math.floor(actualTerminalCount / 5), 1000);
+  // const expectedCatCount = Math.min(Math.floor(actualTerminalCount / 5), 1000);
 
   const handleTerminalCountChange = (count: number) => {
     // Update the actual terminal count (can go to 10,000+)

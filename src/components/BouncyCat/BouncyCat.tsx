@@ -16,7 +16,7 @@ interface Velocity {
   y: number;
 }
 
-export function BouncyCat({ id, onRemove, totalCatCount = 1 }: BouncyCatProps) {
+export function BouncyCat({ totalCatCount = 1 }: BouncyCatProps) {
   const [position, setPosition] = useState<Position>(() => ({
     x: Math.random() * (window.innerWidth - 100),
     y: Math.random() * (window.innerHeight - 100),

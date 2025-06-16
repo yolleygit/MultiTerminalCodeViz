@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 import { ResizableBox } from 'react-resizable';
 import './TerminalWindow.css';
