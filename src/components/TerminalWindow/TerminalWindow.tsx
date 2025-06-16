@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Draggable from 'react-draggable';
 import { ResizableBox } from 'react-resizable';
 import './TerminalWindow.css';
@@ -16,6 +16,7 @@ interface TerminalWindowProps {
   onPositionChange?: (id: string, position: { x: number; y: number }) => void;
   zIndex?: number;
   onFocus?: (id: string) => void;
+  totalTerminalCount?: number;
 }
 
 const DEFAULT_WIDTH = 650;
@@ -29,7 +30,8 @@ export function TerminalWindow({
   onClose,
   onPositionChange,
   zIndex = 10,
-  onFocus
+  onFocus,
+  totalTerminalCount = 1
 }: TerminalWindowProps) {
   const { currentTheme, getColorForRole } = useTheme();
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -49,13 +51,16 @@ export function TerminalWindow({
       : new Date(Date.now() - 12 * 60 * 60 * 1000);
   });
   
-  // Variable speed per terminal (±25% of base speed)
+  // Variable speed per terminal (±25% of base speed) - slightly slower when many terminals
   const [terminalSpeed] = useState(() => {
-    const baseSpeed = 50; // Base speed in ms
+    const baseSpeed = totalTerminalCount > 100 ? 80 : 50; // Slightly slower for very many terminals
     const variation = 0.55; // ±25%
     const randomFactor = 1 + (Math.random() - 0.5) * 2 * variation; // Random between 0.75 and 1.25
     return Math.round(baseSpeed * randomFactor);
   });
+  
+  // Keep animations enabled but clean them up properly when component unmounts
+  const shouldAnimate = true;
   
   // Terminal output animation
   // const outputTypes = ['development', 'build', 'error', 'conversation', 'troubleshooting', 'epic'] as const;
@@ -65,8 +70,8 @@ export function TerminalWindow({
   const { displayedLines, isTyping } = useTypewriter({
     lines: terminalOutputs[outputType] || [],
     speed: terminalSpeed, // Use variable speed per terminal
-    enabled: true,
-    loop: true,
+    enabled: shouldAnimate,
+    loop: shouldAnimate,
     loopDelay: 3000 // 3 seconds before restarting
   });
   

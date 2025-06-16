@@ -16,7 +16,7 @@ export function ControlsPanel({
   onTerminalCountChange,
   onArrangeTerminals,
   minTerminals = 1, 
-  maxTerminals = 100,
+  maxTerminals = 10000,
   catCount = 0,
   onRemoveAllCats
 }: ControlsPanelProps) {
@@ -64,9 +64,10 @@ export function ControlsPanel({
     <>
       {/* Main Controls Panel */}
       <div 
-        className={`fixed top-4 left-4 z-50 bg-gray-800 border border-gray-600 rounded-lg shadow-lg transition-transform duration-300 ${
+        className={`fixed top-4 left-4 bg-gray-800 border border-gray-600 rounded-lg shadow-lg transition-transform duration-300 ${
           isVisible ? 'translate-x-0' : '-translate-x-full'
         }`}
+        style={{ zIndex: 10001 }} // Ensure controls are always above cats and terminals
       >
         <div className="p-4 space-y-3">
           {/* Header */}
@@ -209,8 +210,8 @@ export function ControlsPanel({
       {!isVisible && (
         <button
           onClick={toggleVisibility}
-          className="fixed top-4 left-4 z-50 w-10 h-10 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg shadow-lg text-white transition-colors flex items-center justify-center p-0"
-          style={{ backgroundColor: '#1f2937' }}
+          className="fixed top-4 left-4 w-10 h-10 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg shadow-lg text-white transition-colors flex items-center justify-center p-0"
+          style={{ backgroundColor: '#1f2937', zIndex: 10001 }}
           aria-label="Show controls"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

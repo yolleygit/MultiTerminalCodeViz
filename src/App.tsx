@@ -32,7 +32,15 @@ function AppContent() {
 
   // Hold all terminals directly in state so changes trigger re-renders
   const [highestZIndex, setHighestZIndex] = useState(1);
-
+  
+  // Separate actual count from rendered terminals for performance
+  const [actualTerminalCount, setActualTerminalCount] = useState(1);
+  const [nextTerminalId, setNextTerminalId] = useState(1);
+  
+  // Keep only the most recent N terminals rendered (circular buffer approach)
+  // Reduce rendered terminals when performance is struggling
+  const maxRenderedTerminals = actualTerminalCount > 1000 ? 40 : 80;
+  
   const [terminals, setTerminals] = useState<Terminal[]>(() => [
     {
       id: 'terminal-0',
@@ -44,33 +52,47 @@ function AppContent() {
   // Bouncy cats state
   const [cats, setCats] = useState<string[]>([]);
   
-  const terminalCount = terminals.length;
-  const expectedCatCount = Math.floor(terminalCount / 10);
+  // Use actual count for cats, not rendered count - allow up to 1000 cats
+  const expectedCatCount = Math.min(Math.floor(actualTerminalCount / 5), 1000);
 
   const handleTerminalCountChange = (count: number) => {
+    // Update the actual terminal count (can go to 10,000+)
+    setActualTerminalCount(count);
+    
     setTerminals((prev) => {
       let updated = [...prev];
       let newZ = highestZIndex;
+      let newNextId = nextTerminalId;
 
       // Add new terminals if needed
-      if (count > prev.length) {
-        for (let i = prev.length; i < count; i++) {
+      if (count > actualTerminalCount) {
+        const terminalsToAdd = count - actualTerminalCount;
+        for (let i = 0; i < terminalsToAdd; i++) {
           newZ += 1;
-          updated.push({
-            id: `terminal-${i}`,
+          const newTerminal = {
+            id: `terminal-${newNextId}`,
             position: generateRandomPosition(),
             zIndex: newZ,
-          });
+          };
+          updated.push(newTerminal);
+          newNextId += 1;
+          
+          // If we exceed max rendered terminals, remove the oldest ones
+          if (updated.length > maxRenderedTerminals) {
+            updated = updated.slice(-maxRenderedTerminals);
+          }
         }
-      } else if (count < prev.length) {
+      } else if (count < actualTerminalCount) {
         // Remove terminals from the end
-        updated = updated.slice(0, count);
+        const terminalsToRemove = actualTerminalCount - count;
+        updated = updated.slice(0, Math.max(0, updated.length - terminalsToRemove));
       }
 
       setHighestZIndex(newZ);
+      setNextTerminalId(newNextId);
       
-      // Update cats based on new terminal count
-      const newExpectedCatCount = Math.floor(count / 10);
+      // Update cats based on new actual terminal count (max 1000 cats)
+      const newExpectedCatCount = Math.min(Math.floor(count / 5), 1000);
       setCats(prevCats => {
         if (newExpectedCatCount > prevCats.length) {
           // Add new cats
@@ -91,11 +113,17 @@ function AppContent() {
   };
 
   const handleTerminalClose = (terminalId: string) => {
+    // Decrease actual terminal count
+    const newCount = Math.max(1, actualTerminalCount - 1);
+    setActualTerminalCount(newCount);
+    
     setTerminals((prev) => {
       const updated = prev.filter(terminal => terminal.id !== terminalId);
-      // Update cats when terminal count changes
-      const newExpectedCatCount = Math.floor(updated.length / 10);
+      
+      // Update cats when terminal count changes (max 1000 cats)
+      const newExpectedCatCount = Math.min(Math.floor(newCount / 5), 1000);
       setCats(prevCats => prevCats.slice(0, newExpectedCatCount));
+      
       return updated;
     });
   };
@@ -115,7 +143,8 @@ function AppContent() {
   };
 
   const handleFocus = (terminalId: string) => {
-    const newZ = highestZIndex + 1;
+    // Cap z-index to prevent conflicts with controls (controls are at 10001)
+    const newZ = Math.min(highestZIndex + 1, 9999);
     setHighestZIndex(newZ);
     setTerminals((prev) =>
       prev.map((terminal) =>
@@ -184,7 +213,7 @@ function AppContent() {
     >
       {/* Controls Panel - positioned absolutely in top-left */}
       <ControlsPanel 
-        terminalCount={terminalCount}
+        terminalCount={actualTerminalCount}
         onTerminalCountChange={handleTerminalCountChange}
         onArrangeTerminals={handleArrangeTerminals}
         catCount={cats.length}
@@ -211,6 +240,7 @@ function AppContent() {
             onFocus={handleFocus}
             onClose={() => handleTerminalClose(terminal.id)}
             onPositionChange={handlePositionChange}
+            totalTerminalCount={actualTerminalCount}
           />
         ))}
       </div>
@@ -220,6 +250,7 @@ function AppContent() {
         <BouncyCat 
           key={catId} 
           id={catId}
+          totalCatCount={cats.length}
         />
       ))}
     </div>

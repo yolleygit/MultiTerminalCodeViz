@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface BouncyCatProps {
   id: string;
   onRemove?: (id: string) => void;
+  totalCatCount?: number;
 }
 
 interface Position {
@@ -15,7 +16,7 @@ interface Velocity {
   y: number;
 }
 
-export function BouncyCat({ id, onRemove }: BouncyCatProps) {
+export function BouncyCat({ id, onRemove, totalCatCount = 1 }: BouncyCatProps) {
   const [position, setPosition] = useState<Position>(() => ({
     x: Math.random() * (window.innerWidth - 100),
     y: Math.random() * (window.innerHeight - 100),
@@ -27,43 +28,53 @@ export function BouncyCat({ id, onRemove }: BouncyCatProps) {
   }));
 
   const animationRef = useRef<number>();
+  const lastUpdateRef = useRef<number>(0);
   const catSize = 64; // Assumed cat GIF size
 
-  useEffect(() => {
-    const animate = () => {
-      setPosition(prevPosition => {
-        const newPosition = { ...prevPosition };
-        
-        // Update position
-        newPosition.x += velocity.x;
-        newPosition.y += velocity.y;
-        
-        // Bounce off walls
-        let newVelocity = { ...velocity };
-        
-        // Left and right walls
-        if (newPosition.x <= 0 || newPosition.x >= window.innerWidth - catSize) {
-          newVelocity.x = -newVelocity.x;
-          newPosition.x = Math.max(0, Math.min(newPosition.x, window.innerWidth - catSize));
-        }
-        
-        // Top and bottom walls
-        if (newPosition.y <= 0 || newPosition.y >= window.innerHeight - catSize) {
-          newVelocity.y = -newVelocity.y;
-          newPosition.y = Math.max(0, Math.min(newPosition.y, window.innerHeight - catSize));
-        }
-        
-        // Update velocity if it changed
-        if (newVelocity.x !== velocity.x || newVelocity.y !== velocity.y) {
-          setVelocity(newVelocity);
-        }
-        
-        return newPosition;
-      });
-      
+  // Throttle animation updates to reduce CPU usage - more throttling with more cats
+  const animate = useCallback((timestamp: number) => {
+    // Dynamic throttling based on cat count: more cats = lower frame rate
+    const throttleTime = totalCatCount > 50 ? 50 : totalCatCount > 20 ? 33 : 16;
+    if (timestamp - lastUpdateRef.current < throttleTime) {
       animationRef.current = requestAnimationFrame(animate);
-    };
+      return;
+    }
+    lastUpdateRef.current = timestamp;
+
+    setPosition(prevPosition => {
+      const newPosition = { ...prevPosition };
+      
+      // Update position
+      newPosition.x += velocity.x;
+      newPosition.y += velocity.y;
+      
+      // Bounce off walls
+      let newVelocity = { ...velocity };
+      
+      // Left and right walls
+      if (newPosition.x <= 0 || newPosition.x >= window.innerWidth - catSize) {
+        newVelocity.x = -newVelocity.x;
+        newPosition.x = Math.max(0, Math.min(newPosition.x, window.innerWidth - catSize));
+      }
+      
+      // Top and bottom walls
+      if (newPosition.y <= 0 || newPosition.y >= window.innerHeight - catSize) {
+        newVelocity.y = -newVelocity.y;
+        newPosition.y = Math.max(0, Math.min(newPosition.y, window.innerHeight - catSize));
+      }
+      
+      // Update velocity if it changed
+      if (newVelocity.x !== velocity.x || newVelocity.y !== velocity.y) {
+        setVelocity(newVelocity);
+      }
+      
+      return newPosition;
+    });
     
+    animationRef.current = requestAnimationFrame(animate);
+  }, [velocity, totalCatCount]);
+
+  useEffect(() => {
     animationRef.current = requestAnimationFrame(animate);
     
     return () => {
@@ -71,7 +82,7 @@ export function BouncyCat({ id, onRemove }: BouncyCatProps) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [velocity]);
+  }, [animate]);
 
   // Handle window resize
   useEffect(() => {
