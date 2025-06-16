@@ -23,7 +23,8 @@ const PRESET_COLORS = [
 
 export function AsciiTyper() {
   const [lines, setLines] = useState<TextLine[]>([
-    { id: '1', text: 'Hello! World!' }
+    { id: '1', text: 'I Vibe More' },
+    { id: '1', text: 'Than You' }
   ]);
   const [backgroundColor, setBackgroundColor] = useState('#000000');
   const [textColor, setTextColor] = useState('#22c55e');
