@@ -51,6 +51,7 @@ function AppContent() {
 
   // Bouncy cats state
   const [cats, setCats] = useState<string[]>([]);
+
   
   // Use actual count for cats, not rendered count - allow up to 1000 cats
   // const expectedCatCount = Math.min(Math.floor(actualTerminalCount / 5), 1000);

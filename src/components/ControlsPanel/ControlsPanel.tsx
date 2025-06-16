@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { SimpleYouTubePlayer } from '../YouTubeAudioPlayer/SimpleYouTubePlayer';
 
 interface ControlsPanelProps {
   terminalCount: number;
@@ -22,6 +23,20 @@ export function ControlsPanel({
 }: ControlsPanelProps) {
   const [isVisible, setIsVisible] = useState(true);
   const { themeName, setTheme, getThemeNames } = useTheme();
+
+  // YouTube videos for the audio player
+  const youtubeVideos = [
+    { 
+      id: 'jfKfPfyJRdk', 
+      url: 'https://www.youtube.com/watch?v=jfKfPfyJRdk',
+      title: 'lofi hip hop radio 📚 - beats to relax/study to'
+    },
+    {
+      id: 'example2',
+      url: 'https://www.youtube.com/watch?v=5qap5aO4i9A',
+      title: 'lofi hip hop radio 🎵'
+    }
+  ];
 
   const handleIncrement = () => {
     if (terminalCount < maxTerminals) {
@@ -172,6 +187,11 @@ export function ControlsPanel({
               </button>
             </div>
           )}
+
+          {/* YouTube Audio Player */}
+          <div className="space-y-2">
+            <SimpleYouTubePlayer videos={youtubeVideos} />
+          </div>
 
           {/* Footer */}
           <div className="pt-3 border-t border-gray-600 text-center">
