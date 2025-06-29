@@ -23,11 +23,16 @@ const PRESET_COLORS = [
 
 export function AsciiTyper() {
   const [lines, setLines] = useState<TextLine[]>([
-    { id: '1', text: 'I Vibe More' },
-    { id: '1', text: 'Than You' }
+    { id: '1', text: 'Gradient Text' }
   ]);
   const [backgroundColor, setBackgroundColor] = useState('#000000');
   const [textColor, setTextColor] = useState('#22c55e');
+  const [useTextGradient, setUseTextGradient] = useState(false);
+  const [textGradientStart, setTextGradientStart] = useState('#22c55e');
+  const [textGradientEnd, setTextGradientEnd] = useState('#3b82f6');
+  const [useBackgroundGradient, setUseBackgroundGradient] = useState(false);
+  const [backgroundGradientStart, setBackgroundGradientStart] = useState('#000000');
+  const [backgroundGradientEnd, setBackgroundGradientEnd] = useState('#1f2937');
   const previewRef = useRef<HTMLDivElement>(null);
 
   const addNewLine = () => {
@@ -153,18 +158,35 @@ export function AsciiTyper() {
             ref={previewRef}
             className="p-6 rounded-lg border-2 font-mono text-xs leading-tight overflow-auto"
             style={{ 
-              backgroundColor: backgroundColor,
-              borderColor: textColor,
-              color: textColor
+              background: useBackgroundGradient 
+                ? `linear-gradient(to right, ${backgroundGradientStart}, ${backgroundGradientEnd})`
+                : backgroundColor,
+              borderColor: useTextGradient ? textGradientStart : textColor
             }}
           >
-            <pre>
-              {generatePreview().map((line, index) => (
-                <div key={index} className="whitespace-pre">
-                  {line || '\u00A0'} {/* Non-breaking space for empty lines */}
-                </div>
-              ))}
-            </pre>
+            {useTextGradient ? (
+              <pre style={{
+                background: `linear-gradient(to right, ${textGradientStart}, ${textGradientEnd}) text`,
+                // backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                color: 'transparent'
+              }}>
+                {generatePreview().map((line, index) => (
+                  <div key={index} className="whitespace-pre">
+                    {line || '\u00A0'}
+                  </div>
+                ))}
+              </pre>
+            ) : (
+              <pre style={{ color: textColor }}>
+                {generatePreview().map((line, index) => (
+                  <div key={index} className="whitespace-pre">
+                    {line || '\u00A0'}
+                  </div>
+                ))}
+              </pre>
+            )}
           </div>
         </div>
 
@@ -213,54 +235,188 @@ export function AsciiTyper() {
         <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Background Color */}
           <div>
-            <h3 className="text-lg font-semibold mb-3" style={{ color: textColor }}>
-              Background Color
-            </h3>
-            <div className="grid grid-cols-4 gap-2">
-              {PRESET_COLORS.map((color) => (
-                <button
-                  key={color.value}
-                  onClick={() => setBackgroundColor(color.value)}
-                  className={`w-12 h-12 rounded border-2 transition-all hover:scale-110 ${
-                    backgroundColor === color.value ? 'border-white border-4' : 'border-gray-400'
-                  }`}
-                  style={{ backgroundColor: color.value }}
-                  title={color.name}
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-lg font-semibold" style={{ color: textColor }}>
+                Background Color
+              </h3>
+              <label className="flex items-center gap-2 text-sm" style={{ color: textColor }}>
+                <input
+                  type="checkbox"
+                  checked={useBackgroundGradient}
+                  onChange={(e) => setUseBackgroundGradient(e.target.checked)}
+                  className="rounded"
                 />
-              ))}
+                Use Gradient
+              </label>
             </div>
-            <input
-              type="color"
-              value={backgroundColor}
-              onChange={(e) => setBackgroundColor(e.target.value)}
-              className="mt-2 w-full h-8 rounded cursor-pointer"
-            />
+            
+            {!useBackgroundGradient ? (
+              <>
+                <div className="grid grid-cols-4 gap-2">
+                  {PRESET_COLORS.map((color) => (
+                    <button
+                      key={color.value}
+                      onClick={() => setBackgroundColor(color.value)}
+                      className={`w-12 h-12 rounded border-2 transition-all hover:scale-110 ${
+                        backgroundColor === color.value ? 'border-white border-4' : 'border-gray-400'
+                      }`}
+                      style={{ backgroundColor: color.value }}
+                      title={color.name}
+                    />
+                  ))}
+                </div>
+                <input
+                  type="color"
+                  value={backgroundColor}
+                  onChange={(e) => setBackgroundColor(e.target.value)}
+                  className="mt-2 w-full h-8 rounded cursor-pointer"
+                />
+              </>
+            ) : (
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: textColor }}>
+                    Start Color (Left)
+                  </label>
+                  <div className="grid grid-cols-4 gap-2 mb-2">
+                    {PRESET_COLORS.map((color) => (
+                      <button
+                        key={color.value}
+                        onClick={() => setBackgroundGradientStart(color.value)}
+                        className={`w-12 h-12 rounded border-2 transition-all hover:scale-110 ${
+                          backgroundGradientStart === color.value ? 'border-white border-4' : 'border-gray-400'
+                        }`}
+                        style={{ backgroundColor: color.value }}
+                        title={color.name}
+                      />
+                    ))}
+                  </div>
+                  <input
+                    type="color"
+                    value={backgroundGradientStart}
+                    onChange={(e) => setBackgroundGradientStart(e.target.value)}
+                    className="w-full h-8 rounded cursor-pointer"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: textColor }}>
+                    End Color (Right)
+                  </label>
+                  <div className="grid grid-cols-4 gap-2 mb-2">
+                    {PRESET_COLORS.map((color) => (
+                      <button
+                        key={color.value}
+                        onClick={() => setBackgroundGradientEnd(color.value)}
+                        className={`w-12 h-12 rounded border-2 transition-all hover:scale-110 ${
+                          backgroundGradientEnd === color.value ? 'border-white border-4' : 'border-gray-400'
+                        }`}
+                        style={{ backgroundColor: color.value }}
+                        title={color.name}
+                      />
+                    ))}
+                  </div>
+                  <input
+                    type="color"
+                    value={backgroundGradientEnd}
+                    onChange={(e) => setBackgroundGradientEnd(e.target.value)}
+                    className="w-full h-8 rounded cursor-pointer"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Text Color */}
           <div>
-            <h3 className="text-lg font-semibold mb-3" style={{ color: textColor }}>
-              Text Color
-            </h3>
-            <div className="grid grid-cols-4 gap-2">
-              {PRESET_COLORS.map((color) => (
-                <button
-                  key={color.value}
-                  onClick={() => setTextColor(color.value)}
-                  className={`w-12 h-12 rounded border-2 transition-all hover:scale-110 ${
-                    textColor === color.value ? 'border-white border-4' : 'border-gray-400'
-                  }`}
-                  style={{ backgroundColor: color.value }}
-                  title={color.name}
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-lg font-semibold" style={{ color: textColor }}>
+                Text Color
+              </h3>
+              <label className="flex items-center gap-2 text-sm" style={{ color: textColor }}>
+                <input
+                  type="checkbox"
+                  checked={useTextGradient}
+                  onChange={(e) => setUseTextGradient(e.target.checked)}
+                  className="rounded"
                 />
-              ))}
+                Use Gradient
+              </label>
             </div>
-            <input
-              type="color"
-              value={textColor}
-              onChange={(e) => setTextColor(e.target.value)}
-              className="mt-2 w-full h-8 rounded cursor-pointer"
-            />
+            
+            {!useTextGradient ? (
+              <>
+                <div className="grid grid-cols-4 gap-2">
+                  {PRESET_COLORS.map((color) => (
+                    <button
+                      key={color.value}
+                      onClick={() => setTextColor(color.value)}
+                      className={`w-12 h-12 rounded border-2 transition-all hover:scale-110 ${
+                        textColor === color.value ? 'border-white border-4' : 'border-gray-400'
+                      }`}
+                      style={{ backgroundColor: color.value }}
+                      title={color.name}
+                    />
+                  ))}
+                </div>
+                <input
+                  type="color"
+                  value={textColor}
+                  onChange={(e) => setTextColor(e.target.value)}
+                  className="mt-2 w-full h-8 rounded cursor-pointer"
+                />
+              </>
+            ) : (
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: textColor }}>
+                    Start Color (Left)
+                  </label>
+                  <div className="grid grid-cols-4 gap-2 mb-2">
+                    {PRESET_COLORS.map((color) => (
+                      <button
+                        key={color.value}
+                        onClick={() => setTextGradientStart(color.value)}
+                        className={`w-12 h-12 rounded border-2 transition-all hover:scale-110 ${
+                          textGradientStart === color.value ? 'border-white border-4' : 'border-gray-400'
+                        }`}
+                        style={{ backgroundColor: color.value }}
+                        title={color.name}
+                      />
+                    ))}
+                  </div>
+                  <input
+                    type="color"
+                    value={textGradientStart}
+                    onChange={(e) => setTextGradientStart(e.target.value)}
+                    className="w-full h-8 rounded cursor-pointer"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: textColor }}>
+                    End Color (Right)
+                  </label>
+                  <div className="grid grid-cols-4 gap-2 mb-2">
+                    {PRESET_COLORS.map((color) => (
+                      <button
+                        key={color.value}
+                        onClick={() => setTextGradientEnd(color.value)}
+                        className={`w-12 h-12 rounded border-2 transition-all hover:scale-110 ${
+                          textGradientEnd === color.value ? 'border-white border-4' : 'border-gray-400'
+                        }`}
+                        style={{ backgroundColor: color.value }}
+                        title={color.name}
+                      />
+                    ))}
+                  </div>
+                  <input
+                    type="color"
+                    value={textGradientEnd}
+                    onChange={(e) => setTextGradientEnd(e.target.value)}
+                    className="w-full h-8 rounded cursor-pointer"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
