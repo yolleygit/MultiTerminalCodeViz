@@ -49,7 +49,7 @@ export function BouncyCat({ totalCatCount = 1 }: BouncyCatProps) {
       newPosition.y += velocity.y;
       
       // Bounce off walls
-      let newVelocity = { ...velocity };
+      const newVelocity = { ...velocity };
       
       // Left and right walls
       if (newPosition.x <= 0 || newPosition.x >= window.innerWidth - catSize) {
