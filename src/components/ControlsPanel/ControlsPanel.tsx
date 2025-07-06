@@ -8,18 +8,18 @@ interface ControlsPanelProps {
   onArrangeTerminals?: () => void;
   minTerminals?: number;
   maxTerminals?: number;
-  catCount?: number;
-  onRemoveAllCats?: () => void;
+  rabbitCount?: number;
+  onRemoveAllRabbits?: () => void;
 }
 
-export function ControlsPanel({ 
-  terminalCount, 
+export function ControlsPanel({
+  terminalCount,
   onTerminalCountChange,
   onArrangeTerminals,
-  minTerminals = 1, 
+  minTerminals = 1,
   maxTerminals = 10000,
-  catCount = 0,
-  onRemoveAllCats
+  rabbitCount = 0,
+  onRemoveAllRabbits
 }: ControlsPanelProps) {
   const [isVisible, setIsVisible] = useState(true);
   const { themeName, setTheme, getThemeNames } = useTheme();
@@ -169,21 +169,21 @@ export function ControlsPanel({
             Theme: {themeName}
           </button>
 
-          {/* Cat Controls (only show if cats exist) */}
-          {catCount > 0 && onRemoveAllCats && (
+          {/* Rabbit Controls (only show if rabbits exist) */}
+          {rabbitCount > 0 && onRemoveAllRabbits && (
             <div className="space-y-2">
               <div className="text-center">
                 <span className="text-white font-mono text-xs">
-                  🐱 {catCount} vibe cat{catCount !== 1 ? 's' : ''}
+                  🐰 {rabbitCount} vibe rabbit{rabbitCount !== 1 ? 's' : ''}
                 </span>
               </div>
               <button
-                onClick={onRemoveAllCats}
+                onClick={onRemoveAllRabbits}
                 className="w-full bg-orange-600 hover:bg-orange-700 text-white rounded py-2 px-3 text-sm font-medium transition-colors border-0"
                 style={{ backgroundColor: '#ea580c' }}
-                aria-label="Remove all cats"
+                aria-label="Remove all rabbits"
               >
-                Remove Cats
+                Remove Rabbits
               </button>
             </div>
           )}
